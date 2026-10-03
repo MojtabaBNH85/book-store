@@ -11,11 +11,9 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('wishlists', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('book_id')->constrained('books')->onDelete('cascade');
-            $table->unique(['book_id', 'user_id']);
-            $table->primary(['book_id', 'user_id']);
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('book_id')->constrained('books')->cascadeOnDelete();
+            $table->primary(['user_id', 'book_id']);
             $table->timestamps();
         });
     }

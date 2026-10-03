@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('book_images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('book_id')->constrained()->nullOnUpdate();
+            $table->foreignId('book_id')->constrained()->cascadeOnDelete();
             $table->string('path');
             $table->boolean('is_cover')->default(false);
             $table->integer('sort')->default(0);

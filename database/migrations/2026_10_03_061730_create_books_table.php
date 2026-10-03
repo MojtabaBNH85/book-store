@@ -14,12 +14,16 @@ return new class extends Migration
         Schema::create('books', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('description');
-            $table->foreignId('category_id')->constrained()->nullOnUpdate();
-            $table->string('price');
-            $table->integer('stock');
-            $table->string('published_at')->nullable();
-            $table->string('isbn')->unique();
+            $table->string('slug')->unique();
+            $table->text('description')->nullable();
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('price')->default(0);
+            $table->integer('stock')->default(0);
+            $table->string('cover_image')->nullable();
+            $table->year('published_at')->nullable();
+            $table->string('isbn')->unique()->nullable();
+            $table->decimal('avg_rating', 3, 2)->default(0);
+            $table->integer('ratings_count')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

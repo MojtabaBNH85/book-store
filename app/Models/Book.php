@@ -8,12 +8,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'description', 'category_id', 'price', 'stock', 'published_at', 'isbn', 'is_active'])]
+#[Fillable(['name', 'slug', 'description', 'category_id', 'price', 'stock', 'cover_image', 'published_at', 'isbn', 'avg_rating', 'ratings_count', 'is_active'])]
 class Book extends Model
 {
+    protected $casts = [
+        'price' => 'integer',
+        'avg_rating' => 'decimal:2',
+        'is_active' => 'boolean',
+    ];
+
     public function images(): HasMany
     {
-        return $this->hasMany(BookImage::class);
+        return $this->hasMany(BookImage::class)->orderBy('sort');
     }
 
     public function category(): BelongsTo
@@ -26,20 +32,18 @@ class Book extends Model
         return $this->hasMany(Review::class);
     }
 
-    public function bookImages(): HasMany
+    public function authors(): BelongsToMany
     {
-        return $this->hasMany(BookImage::class);
+        return $this->belongsToMany(Author::class, 'author_book')->withTimestamps();
     }
 
-
-    public function authors(): belongsToMany
+    public function wishedBy(): BelongsToMany
     {
-        return $this->belongsToMany(Author::class, 'author_book');
+        return $this->belongsToMany(User::class, 'wishlists', 'book_id', 'user_id')->withTimestamps();
     }
 
-    public function wishlists(): BelongsToMany
+    public function orderItems(): HasMany
     {
-        return $this->belongsToMany(Book::class , 'wishlists' , 'user_id' , 'book_id');
+        return $this->hasMany(OrderItem::class);
     }
-
 }

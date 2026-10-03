@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['book_id', 'user_id', 'rating', 'comment'])]
 class Review extends Model
 {
+    protected $casts = [
+        'rating' => 'integer',
+    ];
+
     public function book(): BelongsTo
     {
         return $this->belongsTo(Book::class);

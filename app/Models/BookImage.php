@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['book_id', 'path', 'is_cover', 'sort'])]
 class BookImage extends Model
 {
+    protected $casts = [
+        'is_cover' => 'boolean',
+    ];
+
     public function book(): BelongsTo
     {
         return $this->belongsTo(Book::class);
