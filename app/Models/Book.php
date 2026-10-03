@@ -20,4 +20,14 @@ class Book extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function bookImages(): HasMany{
+        return $this->hasMany(BookImage::class);
+    }
+
+
 }
