@@ -1,58 +1,101 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel Book-Store
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Mid-level e-commerce book store built with Laravel 13, Blade + Tailwind CSS, SQLite, and Rial (Iranian currency) pricing.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Catalog**: Browse books with categories, search, author filtering
+- **Shopping Cart**: Session-based cart (no carts table needed)
+- **Checkout**: Orders with address, status tracking
+- **Admin CRUD**: Manage books, categories, authors, orders via database
+- **Reviews & Ratings**: Users can review books (1-5 rating)
+- **Wishlist**: Save books for later
+- **Many-to-Many Authors**: One book can have multiple authors
+- **Image Galleries**: Cover + multiple detail images per book
+- **Full-text Migration**: Fresh database setup with SQLite
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Prerequisites
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- PHP >= 8.3
+- Composer >= 2.9
+- Node >= 20 (for Tailwind)
+- SQLite (included with PHP, no server needed)
 
-## Learning Laravel
+## Quick Start
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. **Install dependencies**
+   ```bash
+   composer install
+   npm install
+   npm run build
+   ```
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2. **Environment**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+3. **Database** (SQLite — no server needed)
+   ```bash
+   php artisan migrate:fresh --seed
+   # or just migrate:
+   php artisan migrate:fresh --force
+   ```
 
-## Agentic Development
+4. **Serve**
+   ```bash
+   php artisan serve
+   # Visit http://localhost:8000
+   ```
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Database Schema
 
-```bash
-composer require laravel/boost --dev
+All migrations live in `database/migrations/`. Key tables:
 
-php artisan boost:install
-```
+| Table | Purpose |
+|-------|---------|
+| `users` | Auth system + `is_admin` flag |
+| `categories` | Book categories + slug |
+| `authors` | Authors + slug + bio |
+| `books` | Core inventory — `price` stored as **integer Rial** (no cents) |
+| `book_images` | Cover + gallery images per book, ordered by `sort` |
+| `addresses` | User addresses with `AddressTypeEnum` (home/work/other) |
+| `reviews` | Ratings 1-5 + comments, unique per user+book |
+| `wishlists` | Pivot: user ↔ book, composite PK `(user_id, book_id)` |
+| `author_book` | Pivot: author ↔ book, composite PK `(book_id, author_id)` |
+| `orders` | Checkout orders + status enum (pending/paid/shipped/completed/cancelled) |
+| `order_items` | Line items linking order + book + qty + price |
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Models & Relations
 
-## Contributing
+- `User` → `hasMany Address`, `hasMany Review`, `belongsToMany Book` (wishlists)
+- `Category` → `hasMany Book`
+- `Author` → `belongsToMany Book` via `author_book`
+- `Book` → `belongsTo Category`, `hasMany Review`, `hasMany BookImage`, `belongsToMany Author`, `belongsToMany User` (wishlists), `hasMany OrderItem`
+- `Order` → `belongsTo User`, `belongsTo Address`, `hasMany OrderItem`
+- `OrderItem` → `belongsTo Order`, `belongsTo Book`, casts `price` as integer
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Price Handling (Rial)
 
-## Code of Conduct
+All money stored as `unsignedBigInteger` in Rial (no decimal/floating point).
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- `books.price`: base price in Rial
+- `orders.total`: order subtotal in Rial  
+- `order_items.price`: line item price in Rial
 
-## Security Vulnerabilities
+Display in Toman by dividing by 10 in your Blade views if desired.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Admin Panel (Basic)
+
+No full admin UI yet. Use tinker/seeds or direct DB queries to manage data. You can add a simple Livewire or Filament admin later.
+
+## Development
+
+- Run tests: `php artisan test`
+- Clear cache: `php artisan cache:clear`
+- Reset DB: `php artisan migrate:fresh --seed`
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT — feel free to modify for your own book store project.
