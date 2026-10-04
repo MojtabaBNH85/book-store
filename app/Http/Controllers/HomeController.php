@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Author;
 use App\Models\Book;
 use App\Models\Category;
 use Illuminate\View\View;
@@ -16,10 +17,12 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
-        $categories = Category::withCount(['books' => fn ($q) => $q->where('is_active', true)])
-            ->take(6)
-            ->get();
+        $stats = [
+            'books' => Book::where('is_active', true)->count(),
+            'authors' => Author::count(),
+            'categories' => Category::count(),
+        ];
 
-        return view('home', compact('books', 'categories'));
+        return view('home', compact('books', 'stats'));
     }
 }

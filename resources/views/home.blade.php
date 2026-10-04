@@ -19,24 +19,27 @@
                 از بوف کور هدایت تا کلیدر دولت‌آبادی — مجموعه‌ای از بهترین‌های ادبیات فارسی با نقد واقعی خوانندگان.
             </p>
             <div class="mt-8 flex flex-wrap gap-3">
-                <a href="#books" class="rounded-xl bg-brand-500 px-6 py-3 text-sm font-bold text-ink-900 shadow-lg transition hover:bg-brand-400">مشاهده کتاب‌ها</a>
-                <a href="#categories" class="rounded-xl border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10">دسته‌بندی‌ها</a>
+                <a href="#books" class="rounded-xl bg-brand-500 px-6 py-3 text-sm font-bold text-ink-900 shadow-lg shadow-brand-500/25 transition hover:-translate-y-0.5 hover:bg-brand-400">مشاهده کتاب‌ها</a>
+                @auth
+                    <a href="{{ route('dashboard') }}" class="rounded-xl border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10">داشبورد من</a>
+                @else
+                    <a href="{{ route('register') }}" class="rounded-xl border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10">همین حالا شروع کن</a>
+                @endauth
             </div>
-        </div>
-    </section>
-
-    {{-- Categories --}}
-    <section id="categories" class="max-w-6xl mx-auto px-4 py-12">
-        <div class="mb-6 flex items-end justify-between">
-            <h2 class="text-xl font-extrabold md:text-2xl">دسته‌بندی‌ها</h2>
-        </div>
-        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            @foreach ($categories as $category)
-                <div class="rounded-2xl border border-ink-200/70 bg-white p-4 shadow-sm transition hover:shadow-md">
-                    <p class="font-bold">{{ $category->name }}</p>
-                    <p class="mt-1 text-xs text-ink-800/60">{{ $category->books_count }} کتاب</p>
+            <dl class="mt-10 flex flex-wrap gap-8 border-t border-white/10 pt-6 text-sm">
+                <div>
+                    <dt class="text-xs text-white/50">کتاب فعال</dt>
+                    <dd class="mt-1 text-xl font-extrabold text-white">{{ number_format($stats['books']) }}+</dd>
                 </div>
-            @endforeach
+                <div>
+                    <dt class="text-xs text-white/50">نویسنده</dt>
+                    <dd class="mt-1 text-xl font-extrabold text-white">{{ number_format($stats['authors']) }}+</dd>
+                </div>
+                <div>
+                    <dt class="text-xs text-white/50">دسته‌بندی</dt>
+                    <dd class="mt-1 text-xl font-extrabold text-white">{{ number_format($stats['categories']) }}</dd>
+                </div>
+            </dl>
         </div>
     </section>
 

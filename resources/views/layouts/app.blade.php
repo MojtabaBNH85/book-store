@@ -23,7 +23,26 @@
                 <nav class="hidden items-center gap-6 text-sm font-medium text-ink-800 md:flex">
                     <a href="{{ url('/') }}" class="transition hover:text-brand-600">خانه</a>
                     <a href="{{ url('/') }}#books" class="transition hover:text-brand-600">کتاب‌ها</a>
-                    <a href="{{ url('/') }}#categories" class="transition hover:text-brand-600">دسته‌بندی‌ها</a>
+                    <div class="group relative">
+                        <button class="flex items-center gap-1 py-5 transition hover:text-brand-600">
+                            دسته‌بندی‌ها
+                            <svg class="size-3.5 transition group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="pointer-events-none invisible absolute right-0 top-full w-64 translate-y-2 rounded-2xl border border-ink-200/70 bg-white p-3 opacity-0 shadow-2xl shadow-ink-900/10 transition-all duration-200 group-hover:pointer-events-auto group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                            <p class="px-3 pb-2 pt-1 text-[11px] font-bold tracking-wide text-ink-800/50">همه دسته‌بندی‌ها</p>
+                            <div class="space-y-1">
+                            @forelse ($navCategories ?? [] as $navCategory)
+                                <a href="{{ route('categories.show', $navCategory->slug) }}"
+                                    class="flex items-center gap-3 rounded-xl px-3 py-3 transition hover:bg-brand-50">
+                                    <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-brand-100 text-sm font-extrabold text-brand-700">‹</span>
+                                    <span class="flex-1 font-semibold text-ink-900 hover:text-brand-700">{{ $navCategory->name }}</span>
+                                </a>
+                            @empty
+                                <p class="px-3 py-3 text-xs text-ink-800/60">دسته‌ای نیست.</p>
+                            @endforelse
+                            </div>
+                        </div>
+                    </div>
                 </nav>
 
                 <div class="flex items-center gap-2 text-sm">
