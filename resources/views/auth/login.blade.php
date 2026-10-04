@@ -58,6 +58,9 @@
             <button type="submit" class="w-full rounded-xl bg-brand-600 py-3 text-sm font-bold text-white shadow transition hover:bg-brand-700">
                 ورود
             </button>
+            <p class="text-center text-sm text-ink-800/70">
+                حساب نداری؟ <a href="{{ route('register') }}" class="font-bold text-brand-700 hover:underline">ثبت‌نام کن</a>
+            </p>
         </form>
     </div>
 

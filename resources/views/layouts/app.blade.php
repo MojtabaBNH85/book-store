@@ -41,7 +41,8 @@
                             <button type="submit" class="rounded-lg border border-ink-200 px-3 py-2 font-medium text-ink-800 transition hover:border-red-300 hover:text-red-600">خروج</button>
                         </form>
                     @else
-                        <a href="{{ route('login') }}" class="rounded-lg bg-brand-600 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-brand-700">ورود / ثبت‌نام</a>
+                        <a href="{{ route('login') }}" class="rounded-lg border border-ink-200 px-4 py-2 font-semibold transition hover:border-brand-500 hover:text-brand-700">ورود</a>
+                        <a href="{{ route('register') }}" class="rounded-lg bg-brand-600 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-brand-700">ثبت‌نام</a>
                     @endauth
                 </div>
             </div>
